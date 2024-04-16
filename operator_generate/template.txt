@@ -1,0 +1,46 @@
+from tbe import tik
+import tbe.common.platform as tbe_platform
+import numpy as np
+
+
+def tg(a, b, kernel_name="tg"):
+    tik_instance = tik.Tik()
+    # soc_version = "Ascend910B"
+    # tbe_platform.set_current_compile_soc_info(soc_version, core_type="AiCore")
+
+    input_a_gm = tik_instance.Tensor("float16", (512, 1024,), name='input_a_gm', scope=tik.scope_gm)
+    output_r_gm = tik_instance.Tensor("float16", (512, 1024,), name='output_r_gm', scope=tik.scope_gm)
+
+    # src_a_ub = tik_instance.Tensor("float16", (120, 1024,), name='src_a_ub', scope=tik.scope_ubuf)
+    src_b_l = tik_instance.Tensor("float16", (512, 1024,), name='src_b_l', scope=tik.scope_cbuf)
+    with tik_instance.for_range(0, 100) as i:
+        tik_instance.data_move(src_b_l[0:], input_a_gm[0:], 0, 1, 32768, 0, 0)
+
+    tik_instance.BuildCCE(kernel_name=kernel_name, inputs=[input_a_gm], outputs=[output_r_gm])
+
+    return tik_instance
+
+
+from tbe import tik
+import tbe.common.platform as tbe_platform
+import numpy as np
+
+
+def tg(a, b, kernel_name="tg"):
+    tik_instance = tik.Tik()
+    # soc_version = "Ascend910B"
+    # tbe_platform.set_current_compile_soc_info(soc_version, core_type="AiCore")
+
+    input_a_gm = tik_instance.Tensor("float16", (512, 1024,), name='input_a_gm', scope=tik.scope_gm)
+    output_r_gm = tik_instance.Tensor("float16", (512, 1024,), name='output_r_gm', scope=tik.scope_gm)
+
+    # src_a_ub = tik_instance.Tensor("float16", (120, 1024,), name='src_a_ub', scope=tik.scope_ubuf)
+    src_b_l = tik_instance.Tensor("float16", (512, 1024,), name='src_b_l', scope=tik.scope_cbuf)
+    with tik_instance.for_range(0, 1) as i:
+        tik_instance.data_move(src_b_l[0:], input_a_gm[0:], 0, 1, 32768, 0, 0)
+
+    tik_instance.BuildCCE(kernel_name=kernel_name, inputs=[input_a_gm], outputs=[output_r_gm])
+
+    return tik_instance
+
+
